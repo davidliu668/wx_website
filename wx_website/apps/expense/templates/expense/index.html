@@ -1,0 +1,9 @@
+{% if latest_expense_list %}
+    <ul>
+    {% for expense in latest_expense_list %}
+	<li>{{ expense.time}} &nbsp;&nbsp; {{ expense.money }} &nbsp;&nbsp; <a href="{% url 'expense:detail' expense.id %}">detail</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No expense in db.</p>
+{% endif %}
