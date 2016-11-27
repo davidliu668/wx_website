@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from apps.wxmp.wxmp_op import WxmpOp
 import logging
 
 
@@ -20,9 +21,15 @@ class Command(BaseCommand):
         run_cmd = options['run']
 
         if run_cmd == 'null':
-            logger.info('run cmd is null.')
+            logger.info('run cmd is null')
         elif run_cmd == 'add_menu':
             logger.info('run cmd: add_menu')
+            wo = WxmpOp()
+            ret = wo.create_menu()
+            if ret:
+                logger.info('run cmd succ')
+            else:
+                logger.info('run cmd fail')
         else:
             logger.warning('unhandle cmd: {}'.format(run_cmd))
             pass

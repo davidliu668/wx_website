@@ -24,7 +24,9 @@ class WxmpClient:
         # 设置url等信息
         self.hc.set_url(url)
         self.hc.set_body(body)
-        self.hc.set_headers(headers)
+        def_headers = {'Content-Type': 'application/json; encoding=utf-8'}
+        def_headers.update(headers)
+        self.hc.set_headers(def_headers)
 
         # 如果body不为空，修改方法为post，并检查body格式
         if body != '':
@@ -35,11 +37,11 @@ class WxmpClient:
         if ret != 0:
             logger.error(
                 'do request fail(http send_and_recv), errinfo: {}'.format(retinfo))
-
-            if not (self.hc.get_exception() is None):
+            logger.error('hc excetpin:{}'.format(self.hc.get_exception()))
+            if self.hc.get_exception() is not None:
                 logger.exception(self.hc.get_exception())
 
-            return (1, None)
+            return (1, None, None)
 
         # 解析body，判断是否有错误码
         try:
@@ -53,16 +55,16 @@ class WxmpClient:
 
                 logger.error('do request fail(wx rsp fail), errcode: {}, errmsg: {}'.format(
                     rsp['errcode'], errmsg))
-                return (3, errmsg)
+                return (3, errmsg, None)
 
             # 如果运行到这里，说明请求成功，返回响应的json对象
             logger.info('do request succ')
 
             rsp_txt = json.dumps(rsp, indent=2)
             logger.debug('wxmp rsp: \n{}'.format(rsp_txt))
-            return (0, rsp)
+            return (0, rsp, rsp_txt)
 
         except Exception as e:
             logger.error('do request fail(parse rsp)')
             logger.exception(e)
-            return (2, None)
+            return (2, None, None)

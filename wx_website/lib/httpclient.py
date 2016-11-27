@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import unicode_literals
 import httplib
 
 
@@ -16,10 +15,11 @@ class HttpClient:
         self.ip = ip
         self.port = port
 
-        self.method = method
-        self.url = url
-        self.headers = headers
-        self.body = body
+        self.set_method(method)
+        self.set_url(url)
+        self.headers = {}
+        self.set_headers(headers)
+        self.set_body(body)
 
         self.rsp_status = 200
         self.rsp_headers = {}
@@ -38,19 +38,37 @@ class HttpClient:
         self.port = port
 
     def set_url(self, url):
-        self.url = url
+        if isinstance(url, unicode):
+            self.url = url.encode('utf-8', 'ignore')
+        else:
+            self.url = url
 
     def set_method(self, method):
-        self.method = method
+        if isinstance(method, unicode):
+            self.method = method.encode('utf-8', 'ignore')
+        else:
+            self.method = method
 
     def set_headers(self, headers):
-        self.headers.update(headers)
+        str_headers = {}
+        for k in headers:
+            v = headers[k]
+            if isinstance(k, unicode):
+                k = k.encode('utf-8', 'ignore')
+            if isinstance(v, unicode):
+                v = v.encode('utf-8', 'ignore')
+            str_headers[k] = v
+
+        self.headers.update(str_headers)
 
     def add_header(self, header):
         self.header.update(header)
 
     def set_body(self, body):
-        self.body = body
+        if isinstance(body, unicode):
+            self.body = body.encode('utf-8', 'ignore')
+        else:
+            self.body = body
 
     def get_status(self):
         return self.rsp_status
@@ -70,8 +88,8 @@ class HttpClient:
     def send_and_recv(self, httpcode=200, timeout=10, recv_len=None):
         try:
             if self.method == "POST":
-                bodylen = len(self.req_body)
-                self.req_headers.update({"Content-Length": bodylen})
+                bodylen = len(self.body)
+                self.headers.update({"Content-Length": bodylen})
 
             if self.https:
                 self.hc = httplib.HTTPSConnection(self.ip, self.port, timeout=timeout)
@@ -89,7 +107,7 @@ class HttpClient:
             self.rsp_body = self.rsp.read(recv_len)
 
             return (0, self.rsp_body)
-        except Exception, e:
+        except Exception as e:
             self.exception = e
             return (2, 'http exception, msg:' + str(e))
         finally:

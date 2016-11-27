@@ -1,0 +1,44 @@
+{
+    "button": [
+        {
+            "name": "下午茶",
+            "sub_button": [
+                {
+                    "type": "view",
+                    "name": "查看记录",
+                    "url": "http://139.199.14.249/expense/"
+                },
+                {
+                    "type": "view",
+                    "name": "添加记录",
+                    "url": "http://v.qq.com/"
+                },
+                {
+                    "type": "click",
+                    "name": "导出邮件",
+                    "key": "V1001_GOOD"
+                }
+            ]
+        },
+        {
+            "name": "其他",
+            "sub_button": [
+                {
+                    "type": "click",
+                    "name": "未实现",
+                    "key": "V1001_GOOD"
+                }
+            ]
+        },
+        {
+            "name": "关于",
+            "sub_button": [
+                {
+                    "type": "click",
+                    "name": "未实现",
+                    "key": "V1001_GOOD"
+                }
+            ]
+        }
+    ]
+}

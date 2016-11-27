@@ -2,7 +2,6 @@
 
 import datetime
 import logging
-import json
 from wxmp_client import WxmpClient
 from models import appinfo
 from models import token
@@ -21,14 +20,13 @@ def get_app_token():
     query_url = "/cgi-bin/token?grant_type=client_credential&appid={}&secret={}".format(appid, secret)
 
     wc = WxmpClient()
-    (ret, rsp) = wc.request(url=query_url)
+    (ret, rsp, rsp_txt) = wc.request(url=query_url)
 
     if ret != 0:
         logger.error('get wxmp app token fail')
         return
 
     if 'access_token' not in rsp:
-        rsp_txt = json.dumps(rsp, indent=2)
         logger.error('get token from rsp fail, rsp:\n{}'.format(rsp_txt))
         return
 
