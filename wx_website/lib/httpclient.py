@@ -1,5 +1,5 @@
 # coding=utf-8
-
+from __future__ import unicode_literals
 import httplib
 
 
@@ -24,6 +24,7 @@ class HttpClient:
         self.rsp_status = 200
         self.rsp_headers = {}
         self.rsp_body = ""
+        self.exception = None
 
         self.hc = None
         self.rsp = None
@@ -42,6 +43,9 @@ class HttpClient:
     def set_method(self, method):
         self.method = method
 
+    def set_headers(self, headers):
+        self.headers.update(headers)
+
     def add_header(self, header):
         self.header.update(header)
 
@@ -59,6 +63,9 @@ class HttpClient:
 
     def get_rsp(self):
         return self.rsp
+
+    def get_exception(self):
+        return self.exception
 
     def send_and_recv(self, httpcode=200, timeout=10, recv_len=None):
         try:
@@ -83,6 +90,7 @@ class HttpClient:
 
             return (0, self.rsp_body)
         except Exception, e:
+            self.exception = e
             return (2, 'http exception, msg:' + str(e))
         finally:
             if self.hc:

@@ -1,8 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.core.mail import send_mail
-from django.core.mail import mail_admins
-from django.core.mail import get_connection
 import hashlib
 import logging
 
@@ -18,6 +15,10 @@ def wx_reg(request):
     echostr = request.GET.get('echostr')
     token = 'zykfxzs'
 
+    if signature is None or timestamp is None or nonce is None or echostr is None:
+        logger.warning('wx_reg url format error.')
+        return HttpResponse("url format error")
+
     str_list = [token, timestamp, nonce]
     str_list.sort()
     list_str = ''.join(str_list)
@@ -26,18 +27,16 @@ def wx_reg(request):
     if exp_sig == signature:
         return HttpResponse(echostr)
     else:
+        logger.error('check wx_reg signature fail.')
         return HttpResponse("check wx_reg fail.")
 
 
 def wx_debug(request):
-    from django.conf import settings
-    rst = 'ok' + str(type(settings))
+    logger.debug('### in wx_debug view ###')
+    rst = 'ok'
 
     try:
-        cc = get_connection(fail_silently=False, username='wx_website@163.com', password='wx123456')
-        mail_admins('ss', 'cc', connection=cc)
-        #send_mail('title33', 'text333', 'wx_website@163.com',
-        #          ['liuzhuofu1984@163.com'])
+        pass
     except Exception, e:
         rst = 'exception:', str(e)
     return HttpResponse(rst)

@@ -1,15 +1,16 @@
 # coding=utf-8
 
 import datetime
+import logging
 import json
-from lib.httpclient import HttpClient
+from wxmp_client import WxmpClient
 from models import appinfo
 from models import token
 
 
 # 微信公众号id
 wxid = 1
-wx_host = 'api.weixin.qq.com'
+logger = logging.getLogger(__name__)
 
 
 def get_app_token():
@@ -19,19 +20,19 @@ def get_app_token():
 
     query_url = "/cgi-bin/token?grant_type=client_credential&appid={}&secret={}".format(appid, secret)
 
-    hc = HttpClient(wx_host, url=query_url, https=True)
-    (ret, retinfo) = hc.send_and_recv()
+    wc = WxmpClient()
+    (ret, rsp) = wc.request(url=query_url)
 
     if ret != 0:
-        print 'get app token fail, info:' + retinfo
+        logger.error('get wxmp app token fail')
         return
 
-    json_obj = json.loads(retinfo)
-    if 'access_token' not in json_obj:
-        print 'get app token fail, wx rsp:' + retinfo
+    if 'access_token' not in rsp:
+        rsp_txt = json.dumps(rsp, indent=2)
+        logger.error('get token from rsp fail, rsp:\n{}'.format(rsp_txt))
         return
 
-    new_token = json_obj['access_token']
+    new_token = rsp['access_token']
     cur_time = datetime.datetime.now()
 
     last_token = token.objects.filter(wxid=wxid)[0]
@@ -39,7 +40,7 @@ def get_app_token():
     last_token.time = cur_time
     last_token.save()
 
-    print 'update app token succ, wxid: {}, time: {}'.format(wxid, str(cur_time)[0:-7])
+    logger.info('update app token succ, wxid: {}, time: {}'.format(wxid, str(cur_time)[0:-7]))
 
 
 if __name__ == "__main__":
