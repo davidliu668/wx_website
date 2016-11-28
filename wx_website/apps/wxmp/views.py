@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.conf import settings
 import hashlib
 import logging
 
@@ -33,7 +34,10 @@ def wx_reg(request):
 
 def wx_debug(request):
     logger.debug('### in wx_debug view ###')
-    rst = 'ok'
+    rst = 'ok {}, {}'.format(str(type(settings.G_WX_ID)), settings.G_WX_ID)
+    wxid = settings.G_WX_ID
+    logstr = "wxid type:{}".format(type(wxid))
+    logger.debug(logstr)
 
     try:
         pass

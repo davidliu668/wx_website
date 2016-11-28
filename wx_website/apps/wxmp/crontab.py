@@ -2,13 +2,14 @@
 
 import datetime
 import logging
+from django.conf import settings
 from wxmp_client import WxmpClient
 from models import appinfo
 from models import token
 
 
 # 微信公众号id
-wxid = 1
+wxid = settings.G_WX_ID
 logger = logging.getLogger(__name__)
 
 

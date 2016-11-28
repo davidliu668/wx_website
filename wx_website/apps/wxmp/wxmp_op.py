@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import logging
 import json
 import os
+from django.conf import settings
 from wxmp_client import WxmpClient
 from models import token
 
@@ -18,7 +19,7 @@ class WxmpOp:
     '''
 
     # 微信公众号id
-    wxid = 1
+    wxid = settings.G_WX_ID
     msg_folder = 'wxmp_msg'
 
     def __init__(self):
