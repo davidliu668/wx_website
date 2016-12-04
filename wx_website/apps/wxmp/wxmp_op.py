@@ -36,7 +36,8 @@ class WxmpOp:
             msg = fp.read()
             msg = msg.decode('utf-8', 'ignore')
         except Exception as e:
-            logger.error('load msg exception, msg: {}, errinfo:{}'.format(msgname, str(e)))
+            logger.error(
+                'load msg exception, msg: {}, errinfo:{}'.format(msgname, str(e)))
             logger.exception(e)
         finally:
             if fp is not None:
@@ -63,5 +64,6 @@ class WxmpOp:
             logger.info('create menu succ')
             return True
         else:
-            logger.error('create_menu fail(rsp check), rspmsg:{}'.format(rspmsg))
+            logger.error(
+                'create_menu fail(rsp check), rspmsg:{}'.format(rspmsg))
             return False
