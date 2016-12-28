@@ -1,5 +1,54 @@
-<h1>{{ expense.id}} </h1>
-<label>time:</label>&nbsp;{{ expense.time }} <br>
-<label>money:</label>&nbsp;{{ expense.money }} <br>
-<label>remark:</label>&nbsp;{{ expense.remark }} <br>
-
+<html>
+    <head>
+        <title>单笔下午茶消费</title>
+        {% include 'html_head_meta.html' %}
+        <style>
+        .table th, .table td { text-align: center; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <form role="form" enctype="multipart/form-data" action="{% url 'expense:add' expense.id %}" method="post">
+                <div class="form-group">
+                    <label class="control-label" for="input_date">时间</label>
+                    <input type="text" class="form-control" name="input_date" value="{{expense.time|date:'Y-m-d H:i:s'}}">
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="input_money">金额</label>
+                    <input type="text" class="form-control" name="input_money" value="{{expense.money}}">
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="input_remark">备注</label>
+                    <input type="text" class="form-control" name="input_remark" value="{{expense.remark}}">
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="input_remark">报销状态</label>
+                    <select class="form-control" name="input_is_expense">
+                        <option value='0'>未报销</option>
+                        {% if expense.is_expense %}
+                        <option value='1' selected = "selected" >已报销</option>
+                        {% else %}
+                        <option value='1'>已报销</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="input_file">报销凭证</label>
+                    {% if expense.fileid == 0 %}
+                    <span class="glyphicon glyphicon-picture"></span>
+                    {% else %}
+                    <img src="{{exp_pic_url}}" class="img-thumbnail"/>
+                    {% endif %}
+                    <input type="file" class="form-control" name="input_file">
+                </div>
+                <div class="btn-group">
+                    {% if expense.id == 0 %}
+                    <button type="submit" class="btn btn-default">添加</button>
+                    {% else %}
+                    <button type="submit" class="btn btn-default">修改</button>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
