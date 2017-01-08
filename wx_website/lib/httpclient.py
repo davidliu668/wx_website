@@ -101,7 +101,7 @@ class HttpClient:
 
             self.rsp_status = self.rsp.status
             if self.rsp_status != httpcode:
-                return (1, "check http code fail, recv http code:".format(self.rsp_status))
+                return (1, "check http code fail, recv http code:{}".format(self.rsp_status))
 
             self.rsp_headers = self.rsp.getheaders()
             self.rsp_body = self.rsp.read(recv_len)
@@ -117,9 +117,8 @@ class HttpClient:
 
 if __name__ == "__main__":
     print "begin .."
-    url1 = "/cgi-bin/token?grant_type=client_credential&appid=wxe190392b2c7d0c25&secret=39b8e16f4b6e479f204157d953d0aa9b"
-    print 'len:', len(url1)
-    hc = HttpClient('api.weixin.qq.com', url=url1, https=True)
+    url1 = "/otn/leftTicket/queryA?leftTicketDTO.train_date=2017-01-13&leftTicketDTO.from_station=DHJ&leftTicketDTO.to_station=LZJ&purpose_codes=ADULT"
+    hc = HttpClient('kyfw.12306.cn', url=url1, https=True)
     (ret, info) = hc.send_and_recv()
     print "ret: ", ret
     print "info: ", info

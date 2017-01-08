@@ -1,10 +1,15 @@
+# coding=utf-8
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+from django.template.loader import get_template
 from models import expense_list
 from models import exp_pic
 from qcloud_cos import CosClient
 from qcloud_cos import UploadFileRequest
+import copy
 import logging
 import datetime
 import os
@@ -22,10 +27,58 @@ cos_region = "guangzhou"
 
 
 def index(request):
-    latest_expense_list = expense_list.objects.order_by('-time')
+    latest_expense_list = expense_list.objects.order_by('-time')[0:10]
     context = {'latest_expense_list': latest_expense_list}
     return render(request, 'expense/index.html', context)
 
+
+def export_exp(request):
+    latest_expense_list = expense_list.objects.order_by('-time')
+
+    exp_list = []
+    exp_index = 1
+
+    no_exp_list = []
+    no_exp_index = 1
+
+    title_list = ['序号', '日期', '金额', '是否报销','报销凭证']
+
+    no_exp_num = 0
+    no_exp_money = 0
+
+    exp_num = len(latest_expense_list)
+    exp_money = 0
+
+    for exp in latest_expense_list:
+        exp_pic_url = exp_pic.objects.get(pk=exp.fileid).access_url
+        time_str = exp.time.strftime('%Y-%m-%d')
+        is_exp = '是' if exp.is_expense else '否'
+        exp_dict = {'money':exp.money, 'time':time_str, 'is_exp':is_exp, 'pic_url':exp_pic_url}
+        if not exp.is_expense:
+            exp_dict['id'] = no_exp_index
+            no_exp_list.append(exp_dict)
+            no_exp_index += 1
+            no_exp_num += 1
+            no_exp_money += exp.money
+
+        new_exp_dict = copy.copy(exp_dict)
+        new_exp_dict['id'] = exp_index
+        exp_list.append(new_exp_dict)
+        exp_index += 1
+        exp_money += exp.money
+
+    mail_title = '下午茶消费报告'
+    summery = '下午茶未报销 {} 笔，未报销金额 {}。'.format(no_exp_num, no_exp_money)
+    html_template = get_template('expense/report.html')
+    html = html_template.render({'summery':summery, 'no_exp_list':no_exp_list}).encode('utf-8')
+    sender = settings.EMAIL_HOST_USER
+    receiver = ['zhuofuliu@tencent.com']
+
+    email = EmailMultiAlternatives(mail_title, html, sender, receiver)
+    email.attach_alternative(html, 'text/html')
+    email.send()
+
+    return HttpResponseRedirect('/expense/')
 
 def detail(request, expense_id):
     exp_pic_url = "#"
@@ -49,15 +102,18 @@ def del_expense(request, expense_id):
 
 
 def add(request, expense_id):
+    if 'cancel' in request.POST:
+        return HttpResponseRedirect('/expense/')
+
     expense_id = int(expense_id)
 
-    input_date = request.POST['input_date']
+    input_date = request.POST['input_date'][0:18]
     input_money = request.POST['input_money']
     input_remark = request.POST['input_remark']
     input_is_expense = request.POST['input_is_expense']
     input_file =request.FILES.get('input_file', None)
 
-    d_date = datetime.datetime.strptime(input_date, '%Y-%m-%d %H:%M:%S')
+    d_date = datetime.datetime.strptime(input_date, '%Y-%m-%dT%H:%M:%S')
     d_money = float(input_money)
     d_remark = input_remark
     d_is_expense = (input_is_expense == '1')

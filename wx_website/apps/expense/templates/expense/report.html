@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>下午茶消费报告</title>
+    <style type="text/css">
+      body {
+        font-family: "Microsoft YaHei";
+        font-size: 12px;
+      }
+      table {
+        font-size:12px;
+        border-collapse: collapse;
+      }
+      thead {
+        text-align: center;
+      }
+      td {
+        border-style: solid;
+        border-width: 1px;
+        text-align: center;
+        border-color: #B0CBE2;
+      }
+      tbody {
+        dispaly: table-row-group;
+        vertical-align: middle;
+        border-color: inherit;
+      }
+      .top-gap {
+        margin-bottom: 10px;
+        text-align: left;
+      }
+      .whole-frame {
+        width: 970px;
+        border: 1pt solid rgb(137, 205, 245);
+        backgroup-color: #FFFFFF;
+      }
+      .frame-inner-top {
+        clear: both;
+        height: 25px;
+      }
+      #Title {
+        font-size: 20px;
+      }
+      thead tr td {
+        text-align: center;
+        line-height: 20px;
+        font-size: 12px;
+        border-bottom: #B0CBE2 solid 1px;
+        background-color: #B0CBE2 solid 1px;
+        background-color: #D5E7F3;
+        font-weight: bold;
+      }
+      .warning td {
+        background-color: #FAEBD7;
+      }
+      .warning-td {
+        background-color: #FAEBD7;
+      }
+      .texing {
+        font-size: 18px;
+        padding: 6px 0 0 8px;
+        width: 970px;
+        text-align: left;
+        margin-left: 20px;
+      }
+      .texing-small {
+        font-size: 16px;
+        padding-top: 5px;
+        padding-left:16px;
+        width: 970px;
+        text-align: left;
+        margin-left: 40px;
+      }
+      .texing-small-small {
+        font-size: 14px;
+        padding-top: 5px;
+        padding-left:16px;
+        width: 970px;
+        text-align: left;
+        margin-left: 56px;
+      }
+      .fulu {
+        font-size: 16px;
+        text-align: left;
+        margin-left: 35px;
+        line-height: 8px;
+      }
+      .text {
+        font-size: 14px;
+        width: 890px;
+        text-align: left;
+        margin-left: 56px;
+      }
+      .figure {
+        width: 850px;
+        margin-left:40px;
+        border: 1pt solid rgb(137, 205, 245);
+      }
+    </style>
+  </head>
+  <body style="overflow-x: auto;">
+    <div class="top-gap"></div>
+    <div>
+    <table class="whole-frame" cellpadding="0" border="1" align="center" width="970px">
+        <tbody>
+          <tr>
+            <td>
+              <div class="frame-inner-top"></div>
+              <div id="Title" align="center">质量组下午茶消费记录</div>
+              <div class="texing">{{summery}}</div>
+              <div align="left" style="clear:both; margin-top:8px; width:850px; margin-bottom:8px;">
+                <table style="width: 850px; margin-left: 56px" align="center">
+                  <thead>
+                    <tr>
+                      <td>序号</td>
+                      <td>日期</td>
+                      <td>金额</td>
+                      <td>是否报销</td>
+                      <td>报销凭证</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for exp in no_exp_list %}
+                          <tr>
+                            <td>{{exp.id}}</td>
+                            <td>{{exp.time}}</td>
+                            <td>{{exp.money}}</td>
+                            <td>{{exp.is_exp}}</td>
+                            <td><a href="{{exp.pic_url}}" target="_blank">查看</a></td>
+                          </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</body>
+</html>

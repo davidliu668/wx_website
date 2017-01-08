@@ -11,11 +11,15 @@
             <form role="form" enctype="multipart/form-data" action="{% url 'expense:add' expense.id %}" method="post">
                 <div class="form-group">
                     <label class="control-label" for="input_date">时间</label>
-                    <input type="text" class="form-control" name="input_date" value="{{expense.time|date:'Y-m-d H:i:s'}}">
+                    <input type="datetime-local" class="form-control" name="input_date" value="{{expense.time|date:'c'}}">
                 </div>
                 <div class="form-group">
                     <label class="control-label" for="input_money">金额</label>
-                    <input type="text" class="form-control" name="input_money" value="{{expense.money}}">
+                    {% if expense.id == 0 %}
+                    <input type="number" class="form-control" name="input_money" value="">
+                    {% else %}
+                    <input type="number" class="form-control" name="input_money" value="{{expense.money}}">
+                    {% endif %}
                 </div>
                 <div class="form-group">
                     <label class="control-label" for="input_remark">备注</label>
@@ -41,12 +45,17 @@
                     {% endif %}
                     <input type="file" class="form-control" name="input_file">
                 </div>
+                <div style="text-align:right;">
                 <div class="btn-group">
                     {% if expense.id == 0 %}
-                    <button type="submit" class="btn btn-default">添加</button>
+                    <button type="submit" class="btn btn-primary" >添加</button>
                     {% else %}
-                    <button type="submit" class="btn btn-default">修改</button>
+                    <button type="submit" class="btn btn-primary" >修改</button>
                     {% endif %}
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-default" name="cancel">取消</button>
+                </div>
                 </div>
             </form>
         </div>

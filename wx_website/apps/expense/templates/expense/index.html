@@ -8,8 +8,7 @@
     </head>
     <body>
         <div class="container">
-            <a href="{% url 'expense:detail' 0 %}" class="btn btn-primary btn-sm" role="button" style='margin-bottom:5px;margin-top:5px;'>添加一笔</a>
-            <br>
+            <h5 class="text-primary" style="text-align: center;">最近十笔下午茶</h6>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-condensed">
                     <thead>
@@ -28,25 +27,44 @@
                             {% else %}
                                 <tr class="warning">
                             {% endif %}
-                                    <td>{{forloop.counter}}</td>
-                                    <td>{{ expense.time|date:'Y-m-d H:i:s'}}</td>
-                                    <td>{{ expense.money }}</td>
                                     <td>
+                                        <a href="{% url 'expense:detail' expense.id %}" >
+                                            {{forloop.counter}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'expense:detail' expense.id %}" >
+                                            {{ expense.time|date:'Y-m-d'}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'expense:detail' expense.id %}" >
+                                            {{ expense.money }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'expense:detail' expense.id %}" >
                                         {% if expense.is_expense %}
                                             <span class="glyphicon glyphicon-ok-circle"></span>
                                         {% else %}
                                             <span class="glyphicon glyphicon-remove-circle"></span>
                                         {% endif %}
+                                        </a>
                                     </td>
                                     <td>
-                                        <a href="{% url 'expense:detail' expense.id %}" class="btn btn-primary btn-sm" role="button">编辑</a>
-                                        <a href="{% url 'expense:del_expense' expense.id %}" class="btn btn-danger btn-sm" role="button">删除</a>
+                                        {# <a href="{% url 'expense:detail' expense.id %}" class="btn btn-primary btn-xs" role="button">编辑</a> #}
+                                        <a href="{% url 'expense:del_expense' expense.id %}"  onclick="return confirm('Are You Sure?');"><span class="glyphicon glyphicon-trash"></span></a>
                                     </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+                <div style="text-align:right;">
+                <a href="{% url 'expense:export_exp' %}" class="btn btn-primary btn-sm" role="button" >导出</a>
+                <a href="{% url 'expense:detail' 0 %}" class="btn btn-primary btn-sm" role="button" >加一笔</a>
+                </div>
+            <br>
             </div>
         </body>
     </html>
