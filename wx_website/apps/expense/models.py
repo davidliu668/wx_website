@@ -8,7 +8,7 @@ from django.db import models
 class expense_list(models.Model):
     money = models.FloatField()
     time = models.DateTimeField()
-    remark = models.CharField(max_length=256)
+    remark = models.CharField(max_length=256, default='')
     is_expense = models.BooleanField(default=False)
     openid = models.CharField(max_length=128, default='nullid')
     fileid = models.PositiveIntegerField(default=0)

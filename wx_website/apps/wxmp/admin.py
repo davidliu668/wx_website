@@ -9,13 +9,13 @@ from models import token
 class AppInfoAdmin(admin.ModelAdmin):
     list_display = ('wxid', 'appid', 'secret')
     search_fields = ('wxid', 'appid', 'secret')
-    ording = ('wxid',)
+    ordering = ('wxid',)
 
 
 class Tokendmin(admin.ModelAdmin):
     list_display = ('wxid', 'token', 'time')
     search_fields = ('wxid', 'token', 'time')
-    ording = ('wxid',)
+    ordering = ('wxid',)
 
 
 admin.site.register(appinfo, AppInfoAdmin)

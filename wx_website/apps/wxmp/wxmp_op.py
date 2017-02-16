@@ -51,7 +51,7 @@ class WxmpOp:
             logger.error('create_menu fail(load msg)')
             return False
 
-        last_token = token.get_token_by_wxid(self.wxid)
+        last_token = token.get_token_by_wxid(self.wxid).token
         query_url = '/cgi-bin/menu/create?access_token={}'.format(last_token)
 
         (ret, rsp, rspmsg) = self.wc.request(url=query_url, body=msg)

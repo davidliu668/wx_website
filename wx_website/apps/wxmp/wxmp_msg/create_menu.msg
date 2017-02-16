@@ -6,7 +6,7 @@
                 {
                     "type": "view",
                     "name": "查看记录",
-                    "url": "http://139.199.14.249/expense/"
+                    "url": "http://gohome123.pw/expense/"
                 },
                 {
                     "type": "view",

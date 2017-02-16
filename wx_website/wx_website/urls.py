@@ -15,10 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from apps.expense import views
 
 
 urlpatterns = [
+    url(r'^$', views.web_root_index),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^expense/', include('apps.expense.urls', namespace="expense")),
     url(r'^wxmp/', include('apps.wxmp.urls', namespace="wxmp")),
+    url(r'^gohome/', include('apps.gohome.urls', namespace="gohome")),
+    url(r'^happytea/', include('apps.happytea.urls', namespace="happytea")),
 ]

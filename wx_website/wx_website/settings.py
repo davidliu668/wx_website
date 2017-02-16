@@ -40,7 +40,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_crontab',
     'apps.expense',
-    'apps.wxmp'
+    'apps.wxmp',
+    'apps.gohome',
+    'apps.happytea'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -95,6 +97,14 @@ CRONJOBS = [
     ('5 * * * *', 'apps.wxmp.crontab.get_app_token'),
 ]
 
+# memcached
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:12888',
+    }
+}
+
 # log config
 LOGGING = {
     'version': 1,
@@ -115,6 +125,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True
         },
+        'apps.happytea': {
+            'handlers': ['handler_happytea_file'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
         'apps': {
             'handlers': ['handler_apps_all_file',
                          'handler_apps_err_file',
@@ -133,6 +148,15 @@ LOGGING = {
         }
     },
     'handlers': {
+        'handler_happytea_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'fmt_simple',
+            'filename': '/data/website/logs/happytea.log',
+            'mode': 'a',
+            'maxBytes': 1 * 1024 * 2014,
+            'backupCount': 5,
+            'level': 'DEBUG'
+        },
         'handler_django_file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'fmt_detail',
@@ -204,7 +228,7 @@ MANAGERS = ADMINS
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
 TIME_ZONE = 'Asia/Shanghai'
 

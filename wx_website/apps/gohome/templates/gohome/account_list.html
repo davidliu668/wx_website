@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>账号列表</title>
+        {% include 'html_head_meta.html' %}
+        <style>
+        .table th, .table td { text-align: center; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <br/>
+            <div style="text-align:left;">
+                <a href="{% url 'gohome:account_imports' %}" class="btn btn-primary btn-sm" role="button" >批量导入</a>
+                <a href="{% url 'gohome:account_info' 0 %}" class="btn btn-primary btn-sm" role="button" >添加</a>
+            </div>
+            <br/>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-condensed">
+                    <thead>
+                        <tr class="bg-primary">
+                            <th>账号</th>
+                            <th>密码</th>
+                            <th>联系人</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in account_list %}
+                            {% if account.status %}
+                                <tr class="success">
+                            {% else %}
+                                <tr class="warning">
+                            {% endif %}
+                                    <td>
+                                        <a href="{% url 'gohome:account_info' account.id %}" >
+                                            {{ account.name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'gohome:account_info' account.id %}" >
+                                            {{ account.passwd }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'gohome:account_info' account.id %}" >
+                                            {{ account.num }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </body>
+    </html>
