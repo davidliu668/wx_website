@@ -20,10 +20,10 @@ import hashlib
 logger = logging.getLogger(__name__)
 
 # cos config
-cos_appid = 1251650800
-cos_secret_id = u'AKIDUYWJuJwbS7cv3zoQq6C6A4nKfsqdhMmE'
-cos_secret_key = u'fPJ5rz2tY3azFOOPRsMqKpKoiYNDIKfy'
-cos_region = "guangzhou"
+cos_appid = settings.COS_APPID
+cos_secret_id = settings.COS_SECRET_ID
+cos_secret_key = settings.COS_SECRET_KEY
+cos_region = settings.COS_REGION
 
 
 def web_root_index(request):
