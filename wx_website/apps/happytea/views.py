@@ -8,6 +8,8 @@ from wechat_sdk import WechatConf
 from wechat_sdk import WechatBasic
 from wechat_sdk.exceptions import ParseError
 from wechat_sdk.messages import *
+from qcloud_cos import CosClient
+from qcloud_cos import UploadFileRequest
 from ..wxmp.models import token
 from ..wxmp.models import appinfo
 from .models import *
@@ -16,6 +18,7 @@ import datetime
 import re
 import csv
 import codecs
+import os
 
 
 logger = logging.getLogger(__name__)
@@ -368,7 +371,14 @@ def hanlder_txt_msg():
 
         content = '报销成功！\n\n修改报销记录 {} 条，金额 {} 元'.format(num, money)
         return wechat.response_text(content=content)
-
+    # 手动出发备份(管理员)
+    if user is not None and user.is_admin and txt == u'备份':
+        (ret, info) = bacup_to_cos()
+        if ret:
+            content = '备份成功，请查收邮件'
+        else:
+            content = '备份失败，错误:' + info
+        return wechat.response_text(content=content)
     # 运行到这里，说明没有匹配上任何命令，返回帮助
     content = gen_user_help(user)
     return wechat.response_text(content=content)
@@ -475,7 +485,7 @@ def send_summery_mail(user, content, filepath):
     mail_title = '【架平下午茶】下午茶消费信息统计'.format(user.rtx)
     mail_txt = content
     sender = settings.EMAIL_HOST_USER
-    receiver = ['{}@tencent.com'.format(user.rtx), 'liuzhuofu1984@163.com']
+    receiver = ['{}@tencent.com'.format(user.rtx)]
     email = EmailMultiAlternatives(mail_title, mail_txt, sender, receiver)
     email.attach_alternative(mail_txt, 'text/plain')
     email.attach_file(filepath)
@@ -811,3 +821,50 @@ def gen_fankui_help():
 例如：'反馈 请问可以支持语音输入吗？'
 '''
     return fankui_help
+
+
+def bacup_to_cos():
+    try:
+        time_str = datetime.datetime.now().strftime('%Y%m%d')
+        filename = 'happytea_{}.sql'.format(time_str)
+        backup_path = '/data/mysql/backup/happytea/'
+        file_path = backup_path + filename
+
+        # 如果文件不在，抛异常
+        if not os.path.isfile(file_path):
+            raise Exception(
+                'sql export file not exist, path:{}'.format(file_path))
+
+        cos_client = CosClient(settings.COS_APPID, settings.COS_SECRET_ID,
+                               settings.COS_SECRET_KEY, settings.COS_REGION)
+        cos_upload_req = UploadFileRequest(
+            u'happytea', u'/' + filename.decode('utf8'), file_path.decode('utf8'))
+        # 允许覆盖
+        cos_upload_req.set_insert_only(0)
+        cos_upload_rsp = cos_client.upload_file(cos_upload_req)
+
+        if cos_upload_rsp['code'] != 0:
+            raise Exception('cos upload fail, info:{}'.format(
+                cos_upload_rsp['message']))
+
+        # 如果运行到这里，说明成功了
+        if datetime.datetime.now().weekday() == 0:
+            mail_title = '【架平下午茶】数据备份'
+            mail_txt = '见附件'
+            sender = settings.EMAIL_HOST_USER
+            receiver = maillist_fankui
+            email = EmailMultiAlternatives(
+                mail_title, mail_txt, sender, receiver)
+            email.attach_alternative(mail_txt, 'text/plain')
+            email.attach_file(file_path)
+            email.send()
+        return (True, None)
+    except Exception as e:
+        mail_title = '【架平下午茶】备份sql失败！！！'
+        mail_txt = '失败原因：' + str(e)
+        sender = settings.EMAIL_HOST_USER
+        receiver = maillist_fankui
+        email = EmailMultiAlternatives(mail_title, mail_txt, sender, receiver)
+        email.attach_alternative(mail_txt, 'text/plain')
+        email.send()
+        return (False, str(e))

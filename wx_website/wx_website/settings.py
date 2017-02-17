@@ -95,6 +95,7 @@ DATABASES = {
 # django_crontab
 CRONJOBS = [
     ('5 * * * *', 'apps.wxmp.crontab.get_app_token'),
+    ('30 1 * * *', 'apps.happytea.view.bacup_to_cos'),
 ]
 
 # memcached
@@ -104,6 +105,12 @@ CACHES = {
         'LOCATION': '127.0.0.1:12888',
     }
 }
+
+# cos
+COS_APPID = user_config.UC_COS_APPID
+COS_SECRET_ID = user_config.UC_COS_SECRET_ID
+COS_SECRET_KEY = user_config.UC_COS_SECRET_KEY
+COS_REGION = user_config.UC_COS_REGION
 
 # log config
 LOGGING = {
@@ -229,13 +236,9 @@ MANAGERS = ADMINS
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'zh-hans'
-
 TIME_ZONE = 'Asia/Shanghai'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = False
 
 
