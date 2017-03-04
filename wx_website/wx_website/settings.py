@@ -95,7 +95,7 @@ DATABASES = {
 # django_crontab
 CRONJOBS = [
     ('5 * * * *', 'apps.wxmp.crontab.get_app_token'),
-    ('30 1 * * *', 'apps.happytea.view.bacup_to_cos'),
+    ('30 1 * * *', 'apps.happytea.views.backup_to_cos'),
 ]
 
 # memcached

@@ -373,7 +373,7 @@ def hanlder_txt_msg():
         return wechat.response_text(content=content)
     # 手动出发备份(管理员)
     if user is not None and user.is_admin and txt == u'备份':
-        (ret, info) = bacup_to_cos()
+        (ret, info) = backup_to_cos()
         if ret:
             content = '备份成功，请查收邮件'
         else:
@@ -823,7 +823,8 @@ def gen_fankui_help():
     return fankui_help
 
 
-def bacup_to_cos():
+def backup_to_cos():
+    logger.info('begin backup_to_cos')
     try:
         time_str = datetime.datetime.now().strftime('%Y%m%d')
         filename = 'happytea_{}.sql'.format(time_str)
@@ -858,8 +859,11 @@ def bacup_to_cos():
             email.attach_alternative(mail_txt, 'text/plain')
             email.attach_file(file_path)
             email.send()
+
+        logger.info('backup_to_cos succ.')
         return (True, None)
     except Exception as e:
+        logger.error('backup_to_cos fail, err:' + str(e))
         mail_title = '【架平下午茶】备份sql失败！！！'
         mail_txt = '失败原因：' + str(e)
         sender = settings.EMAIL_HOST_USER
