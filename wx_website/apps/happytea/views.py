@@ -461,24 +461,27 @@ def gen_reg_info(reg_req):
 
 
 def parse_register_req(txt):
-    items = txt.split(u' ')
-    item_num = len(items)
-    if item_num != 3:
-        return (False, None)
+    try:
+        items = txt.split(u' ')
+        item_num = len(items)
+        if item_num != 3:
+            return (False, None)
 
-    # rtx名必须全部是字母
-    rtx = items[1].encode('utf8').lower()
-    if not re.match('^[a-z]+$', rtx):
-        return (False, None)
+        # rtx名必须全部是字母
+        rtx = items[1].encode('utf8').lower()
+        if not re.match('^[a-z]+$', rtx):
+            return (False, None)
 
-    # team_name 必须在范围内
-    team_name = items[2].encode('utf8')
-    tms = Team.objects.filter(name=team_name)
-    if len(tms) != 1:
-        return (False, None)
+        # team_name 必须在范围内
+        team_name = items[2].encode('utf8')
+        tms = Team.objects.filter(name=team_name)
+        if len(tms) != 1:
+            return (False, None)
 
-    reg_req = (rtx, tms[0].id, team_name)
-    return (True, reg_req)
+        reg_req = (rtx, tms[0].id, team_name)
+        return (True, reg_req)
+    except Exception:
+        return (False, None)
 
 
 def send_summery_mail(user, content, filepath):
@@ -588,33 +591,37 @@ def check_user(user):
 
 
 def parse_add_expense(txt):
-    items = txt.split(u' ')
-    item_num = len(items)
-    # 参数的个数应该大于 2 个：添加 金额 [时间] [备注]
-    if item_num >= 2:
-        # 1 解析 金额，并判断是否大于0
-        money = float(items[1])
-        if money <= 0:
-            return (False, None)
-
-        # 2 解析 时间，如没有，则使用当天
-        if item_num >= 3:
-            try:
-                charge_time = datetime.datetime.strptime(items[2], '%Y%m%d')
-            except Exception:
+    try:
+        items = txt.split(u' ')
+        item_num = len(items)
+        # 参数的个数应该大于 2 个：添加 金额 [时间] [备注]
+        if item_num >= 2:
+            # 1 解析 金额，并判断是否大于0
+            money = float(items[1])
+            if money <= 0:
                 return (False, None)
-        else:
-            charge_time = datetime.datetime.now()
 
-        # 解析 备注，如没有，则设置‘’
-        if item_num >= 4:
-            remarks = items[3:]
-            remark = ' '.join(remarks)
-        else:
-            remark = ''
+            # 2 解析 时间，如没有，则使用当天
+            if item_num >= 3:
+                try:
+                    charge_time = datetime.datetime.strptime(
+                        items[2], '%Y%m%d')
+                except Exception:
+                    return (False, None)
+            else:
+                charge_time = datetime.datetime.now()
 
-        return (True, (money, charge_time, remark))
-    else:
+            # 解析 备注，如没有，则设置‘’
+            if item_num >= 4:
+                remarks = items[3:]
+                remark = ' '.join(remarks)
+            else:
+                remark = ''
+
+            return (True, (money, charge_time, remark))
+        else:
+            return (False, None)
+    except Exception:
         return (False, None)
 
 
