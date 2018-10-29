@@ -25,4 +25,8 @@ urlpatterns = [
     url(r'^wxmp/', include('apps.wxmp.urls', namespace="wxmp")),
     url(r'^gohome/', include('apps.gohome.urls', namespace="gohome")),
     url(r'^happytea/', include('apps.happytea.urls', namespace="happytea")),
+    url(r'^happytea_wxapp/', include('apps.happytea_wxapp.urls', namespace="happytea_wxapp")),
+    url(r'^ims/', include('apps.ims.urls', namespace="ims")),
+    url(r'^hcp/', include('apps.hcp.urls', namespace="hcp")),
+    url(r'^mail_proxy/', include('apps.mail_proxy.urls', namespace="mail_proxy")),
 ]

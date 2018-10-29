@@ -1,0 +1,107 @@
+{% extends "base_hcp.html" %}
+{% block content %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+
+<form id="ims_info" action="/hcp/ims_new/"  method="POST" >
+  <div class="form-group">
+    <label for="name">乘车人姓名</label>
+    <input type="text" class="form-control" name="name" id="name" value="{{name}}">
+    <span class="help-block">如果是学生票，请在备注中说明</span>
+  </div>
+  <div class="form-group">
+    <label for="sfz_id">身份证号</label>
+    <input type="text" class="form-control" name="sfz_id" id="sfz_id" value="{{sfz_id}}">
+  </div>
+  <div class="form-group">
+    <label for="time">出发时间</label>
+    <input type="date" class="form-control" name="time" id="time" value="{{time}}">
+    <span class="help-block">如果从某天开始，连续几天的票都可以，请在备注中说明</span>
+  </div>  
+  <div class="form-group">
+    <label for="from">出发地</label>
+    <input type="text" class="form-control" name="from" id="from" value="{{from}}">
+  </div>
+  <div class="form-group">
+    <label for="to">目的地</label>
+    <input type="text" class="form-control" name="to" id="to" value="{{to}}">
+  </div>
+  <div class="form-group">
+    <label for="remark">备注</label>
+    <textarea rows="6" class="form-control" name="remark" id="remark" 
+    placeholder="例如: 
+小李 是学生票; 
+13-18号发车的票都可以;
+只要二等座; 
+必须和 张三 坐一趟车; ">{{remark}}</textarea>
+  </div>
+  <input type="text" class="hidden" name="id" id="id" value="{{id}}">
+
+  {% if id == 0 %}
+  <button id="btn_submit" type="submit" class="btn btn-default">新建</button>
+  {% else %}
+  <button id="btn_submit" type="submit" class="btn btn-default">修改</button>
+  {% endif %}
+  <button id="btn_return" type="button" class="btn btn-default" onclick="javascript:history.back()">取消</button>
+</form>
+<script language="javascript">
+$(function () {
+    $('#ims_info').bootstrapValidator({
+    　　message: '输入值不合法',
+        feedbackIcons: {
+　　　　　　　　valid: 'glyphicon glyphicon-ok',
+　　　　　　　　invalid: 'glyphicon glyphicon-remove',
+　　　　　　　　validating: 'glyphicon glyphicon-refresh'
+　　　　},
+        fields: {
+            name: {
+                message: '乘车人姓名不合法',
+                validators: {
+                    notEmpty: {
+                        message: '乘车人姓名不能为空'
+                    },
+                    stringLength: {
+                        min: 2,
+                        max: 16,
+                        message: '乘车人姓名长度不合法'
+                    }
+                }
+            },
+            sfz_id: {
+                message: '身份证号不合法',
+                validators: {
+                    notEmpty: {
+                        message: '身份证号不能为空'
+                    },
+                    stringLength: {
+                        min: 18,
+                        max: 18,
+                        message: '身份证号为18位'
+                    }
+                }
+            },
+            from: {
+                message: '始发站不合法',
+                validators: {
+                    notEmpty: {
+                        message: '始发站不能为空'
+                    }
+                }
+            },
+            to: {
+                message: '终点站不合法',
+                validators: {
+                    notEmpty: {
+                        message: '终点站不能为空'
+                    }
+                }
+            }
+        }
+    });
+    $('#name').focus()
+});
+</script>
+  </div>
+</div>
+{% endblock %}

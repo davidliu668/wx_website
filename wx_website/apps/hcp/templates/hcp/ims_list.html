@@ -1,0 +1,100 @@
+{% extends "base_hcp.html" %}
+{% block content %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <h4>您好，{{name_display}}，当前乘车人：{{num}}位</h4>
+    <hr>
+    <h5>添加/更新乘车人信息后，请将'订单确认'的信息发送给我们（见联系方式） </h5>
+    <!-- 按钮区 -->
+    <div class="page-header" style="margin-top:0px;margin-bottom:10px;">
+      <a href="/hcp/ims_detail/0/">
+      <button type="button" class="btn btn-default" style="margin-right:5px;" id="btn_new">添加乘车人</button>
+      </a>
+      <a href="/hcp/ims_rpt/{{name}}/">
+      <button type="button" class="btn btn-default" style="margin-right:5px;" id="btn_new">订单确认</button>
+      </a>
+      <hr>
+      <a href="/hcp/ims_about/">
+      <button type="button" class="btn btn-default" style="margin-right:5px;" id="btn_new">联系方式</button>
+      </a>
+      <a href="/hcp/ims_logout/">
+      <button type="button" class="btn btn-default" style="margin-right:5px;" id="btn_new">注销</button>
+      </a>
+    </div>     
+    {% if num == 0 %}
+      <div class="form-group">
+        <span class="text-info">请先点击‘添加乘车人’，谢谢</span>
+      </div>
+    {% else %}
+    <!-- 表格 -->
+    <table id="ims_list" class="table table-hover table-striped table-bordered">
+      <thead>
+        <th>乘车人</th>
+        <th>日期</th>
+        <th>出发地</th>
+        <th>目的地</th>
+        <!--
+        <th>详细信息</th>
+        -->
+      </thead>
+    </table>  
+    {% endif %}
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#ims_list').DataTable({
+      "autoWidth": false,
+      "columns": [
+        {"width": "20%", "data": null,   "className": "tb-td-center", "render": function (data, type, row, meta) {
+            var val1 = '<a href="/hcp/ims_detail/' + row.id + '/" >'+row.name+'</a>'
+            return val1;
+        }},
+        {"width": "20%", "data": null,   "className": "tb-td-center", "render": function (data, type, row, meta) {
+            var val1 = '<a href="/hcp/ims_detail/' + row.id + '/" >'+row.time+'</a>'
+            return val1;
+        }},
+        {"width": "20%", "data": null,   "className": "tb-td-center", "render": function (data, type, row, meta) {
+            var val1 = '<a href="/hcp/ims_detail/' + row.id + '/" >'+row.from+'</a>'
+            return val1;
+        }},
+        {"width": "20%", "data": null,   "className": "tb-td-center", "render": function (data, type, row, meta) {
+            var val1 = '<a href="/hcp/ims_detail/' + row.id + '/" >'+row.to+'</a>'
+            return val1;
+        }}/*,
+        {"width": "8%", "data": null,   "className": "tb-td-center ims_hide", "render": function (data, type, row, meta) {
+            var val6 = '<a href="#" title="' + row.all + '">在此查看：'+row.all+'</a>'
+            return val6;
+        }},*/
+      ],
+      "ordering": false,
+      "lengthChange": false,
+      "searching": false,
+      "stateSave": true,
+      "processing": true,
+      "serverSide": false,
+      "ajax": '/hcp/ajax_get_list/{{name}}/',
+      "language": {
+        "emptyTable": "未加载",
+        "loadingRecords": "加载中",
+        "processing": "查询中",
+        "search": "查找：",
+        "lengthMenu": "每页 _MENU_ 条",
+        "zeroRecords": "没有数据",
+        "paginate": {
+            'first': '首页',
+            'last': '末页',
+            'next': '后一页',
+            'previous': '前一页'
+        },
+        "info": '第 _PAGE_ 页 / 共 _PAGES_ 页',
+        "infoEmpty": '第 0 页 / 共 0 页',
+        "infoFiltered": '(过滤总数 _MAX_ 条)'
+      }
+    }); //end of $('#ims_list').DataTable        
+  });
+
+</script>
+
+{% endblock %}

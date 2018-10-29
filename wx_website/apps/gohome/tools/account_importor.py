@@ -90,7 +90,10 @@ class Importor(object):
                 continue
             user_passwd = line.split(',')
             user = user_passwd[0]
-            passwd = user_passwd[1]
+            if len(user_passwd) == 2:
+                passwd = user_passwd[1]
+            else:
+                passwd = 'aa123456'
 
             new_acts_list.append((user, passwd))
 

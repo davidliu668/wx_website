@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+
+<form id="ims_info" action="#"  method="POST" >
+  {% for col, val in item_list %}
+  <div class="form-group form-inline col-lg-6">
+    <label style="width:30%;text-align:left;" >{{ col }}</label>
+    <input type="text" class="form-control" style="width:60%;text-align:left;" value="{{ val }}">
+  </div>
+  {% endfor %}
+
+  <button id="btn_return" type="button" class="hidden btn btn-default">返回</button>
+</form>
+  </div>
+</div>
+{% endblock %}

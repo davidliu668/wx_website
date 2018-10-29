@@ -11,6 +11,7 @@ class TeaCharge(models.Model):
     modify_time = models.DateTimeField(auto_now=True)
     remark = models.CharField(max_length=256, default='')
     money = models.FloatField()
+    add_type = models.PositiveIntegerField(default=1)
     expense = models.BooleanField(default=False)
     fileid = models.PositiveIntegerField(default=0)
 

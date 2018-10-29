@@ -1,0 +1,48 @@
+{% extends "base_hcp.html" %}
+{% block content %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+
+<form id="ims_login" action="/hcp/do_login/"  method="POST" >
+  <div class="form-group">
+    <label for="user">手机号</label>
+    <input type="number" class="form-control" name="user" id="user" placeholder="必填，以便购票成功后及时与您取得联系" value="{{name}}">
+  </div>
+  <div class="form-group">
+    <label for="wx_name">微信昵称</label>
+    <input type="text" class="form-control" name="wx_name" id="wx_name" placeholder="选填，方便微信知会购票进展" value="{{wx_name}}">
+  </div>
+  <button id="btn_submit" type="submit" class="btn btn-default">登录</button>
+</form>
+<script language="javascript">
+$(function () {
+    $('#ims_login').bootstrapValidator({
+    　　message: '输入值不合法',
+        feedbackIcons: {
+　　　　　　　　valid: 'glyphicon glyphicon-ok',
+　　　　　　　　invalid: 'glyphicon glyphicon-remove',
+　　　　　　　　validating: 'glyphicon glyphicon-refresh'
+　　　　},
+        fields: {
+            name: {
+                message: '手机号不合法',
+                validators: {
+                    notEmpty: {
+                        message: '手机号不能为空'
+                    },
+                    stringLength: {
+                        min: 11,
+                        max: 32,
+                        message: '手机号至少11位'
+                    }
+                }
+            }
+        }
+    });
+    $('#user').focus()
+});
+</script>
+  </div>
+</div>
+{% endblock %}

@@ -801,8 +801,8 @@ def get_unexp_teacharge_info(user=None):
 
         for tc in tcs:
             user_id = tc.user_id
-            username = User.get_user_by_id(user_id).rtx
             if user_id not in team_user_dict:
+                username = User.get_user_by_id(user_id).rtx
                 team_user_dict[user_id] = {'tc_num': 0, 'tc_total': 0,
                                            'tc_list': [], 'name': username}
 

@@ -1,0 +1,25 @@
+<div id="sidebar-wrapper">
+  <ul class="sidebar-nav" id="sidebar-menu">
+    <li class="sidebar-brand">
+      <a href="javscript:void(0);">
+        火车票快捷录入
+      </a><p></p>
+    </li>
+    <li id="li_list" class="one-level">
+      <a href="/hcp/ims_login/login/">
+        <span class="glyphicon glyphicon-home"></span>
+        火车票下单
+      </a>
+    </li>
+    <li id="li_other" class="hidden one-level">
+      <a href="/ims/other">
+        <span class="glyphicon glyphicon-tower"></span>
+        其他
+      </a>
+    </li>
+  </ul>
+<script>
+  $('.sidebar-nav li.active').removeClass('active')
+  $('#{{active_li_id}}').addClass('active')
+</script>
+</div>

@@ -42,13 +42,17 @@ INSTALLED_APPS = (
     'apps.expense',
     'apps.wxmp',
     'apps.gohome',
-    'apps.happytea'
+    'apps.happytea',
+    'apps.happytea_wxapp',
+    'apps.ims',
+    'apps.mail_proxy',
+    'apps.hcp',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-#    'django.middleware.csrf.CsrfViewMiddleware',
+    #    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -137,6 +141,16 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True
         },
+        'apps.happytea_wxapp': {
+            'handlers': ['handler_happytea_wxapp_file'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'apps.ims': {
+            'handlers': ['handler_ims_file'],
+            'level': 'INFO',
+            'propagate': True
+        },
         'apps': {
             'handlers': ['handler_apps_all_file',
                          'handler_apps_err_file',
@@ -159,6 +173,24 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'fmt_simple',
             'filename': '/data/website/logs/happytea.log',
+            'mode': 'a',
+            'maxBytes': 1 * 1024 * 2014,
+            'backupCount': 5,
+            'level': 'DEBUG'
+        },
+        'handler_happytea_wxapp_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'fmt_simple',
+            'filename': '/data/website/logs/happytea_wxapp.log',
+            'mode': 'a',
+            'maxBytes': 1 * 1024 * 2014,
+            'backupCount': 5,
+            'level': 'DEBUG'
+        },
+        'handler_ims_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'fmt_simple',
+            'filename': '/data/website/logs/ims.log',
             'mode': 'a',
             'maxBytes': 1 * 1024 * 2014,
             'backupCount': 5,

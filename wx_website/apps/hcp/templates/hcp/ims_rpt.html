@@ -1,0 +1,24 @@
+{% extends "base_hcp.html" %}
+{% block content %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+
+<form id="ims_info" action="/hcp/ims_new/"  method="POST" >
+    <label for="rpt">订单汇总信息</label>
+    <textarea rows="17" class="form-control" name="rpt" id="rpt" >{{rpt_txt}}</textarea>
+  </div>
+  <input type="text" class="hidden" name="id" id="id" value="1">
+
+  <button type="buuton" class="hidden">aa</button>
+  <button id="btn_return" type="button" class="btn btn-default" style="margin-left: 10px;align:right;" onclick="javascript:history.back()">返回</button>
+</form>
+<script language="javascript">
+$(function () {
+    $('#rpt').select()
+});
+</script>
+  </div>
+</div>
+
+{% endblock %}

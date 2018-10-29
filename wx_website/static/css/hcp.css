@@ -1,0 +1,16 @@
+.tb-td-center {
+  text-align: center;
+}
+
+.tb-td-left {
+  text-align: left;
+}
+
+.tb-td-right {
+  text-align: right;
+}
+
+td>a.click_his:visited {
+  color: #808080;
+}
+

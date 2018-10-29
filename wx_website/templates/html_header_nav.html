@@ -1,0 +1,13 @@
+<div id="bread-nav">
+  <ol class="breadcrumb" style="background-color:#fff; border:1px solid #e0e0e0">
+    {% for bread_nav_item in bread_nav_list %}
+      {% if forloop.last %}
+        <li class="active">{{bread_nav_item.tag}}</li>
+      {% else %}
+        <li><a href="{{bread_nav_item.url}}">{{bread_nav_item.tag}}</a></li>
+      {% endif %}
+    {% empty %}
+      <li class="active">IMS系统</li>
+    {% endfor %}
+  </ol>
+</div>

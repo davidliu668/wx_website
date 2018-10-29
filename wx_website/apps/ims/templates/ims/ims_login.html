@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+
+<form id="ims_login" action="/ims/do_login/"  method="POST" >
+  <div class="form-group">
+    <label for="name">用户名</label>
+    <input type="text" class="form-control" name="name" id="name">
+  </div>
+  <div class="form-group">
+    <label for="ip">密码</label>
+    <input type="password" class="form-control" name="passwd" id="passwd">
+  </div>
+  {% if is_fail == 1 %}
+  <div class="form-group">
+  <span class="text-danger">用户名/密码错误，请重新登录！</span>
+  </div>
+  {% endif %}
+  <button id="btn_submit" type="submit" class="btn btn-default">登录</button>
+</form>
+<script language="javascript">
+$(function () {
+    $('#ims_login').bootstrapValidator({
+    　　message: '输入值不合法',
+        feedbackIcons: {
+　　　　　　　　valid: 'glyphicon glyphicon-ok',
+　　　　　　　　invalid: 'glyphicon glyphicon-remove',
+　　　　　　　　validating: 'glyphicon glyphicon-refresh'
+　　　　},
+        fields: {
+            name: {
+                message: '用户名不合法',
+                validators: {
+                    notEmpty: {
+                        message: '用户名不能为空'
+                    },
+                    stringLength: {
+                        min: 4,
+                        max: 32,
+                        message: '长度必须为4-32位之间'
+                    }
+                }
+            },
+            passwd: {
+                message: '密码不合法',
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空'
+                    },
+                    stringLength: {
+                        min: 4,
+                        max: 32,
+                        message: '长度必须为4-32位之间'
+                    }
+                }
+            }
+        }
+    });
+    $('#name').focus()
+});
+</script>
+  </div>
+</div>
+{% endblock %}

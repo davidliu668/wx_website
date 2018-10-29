@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <!-- 按钮区 -->
+    <div class="hidden page-header" style="margin-top:0px;margin-bottom:10px;">
+      <a href="#">
+      <button type="button" class="btn btn-default" style="margin-right:5px;" id="btn_new">新建</button>
+      </a>
+    </div>     
+    <!-- 表格 -->
+    <table id="ims_list" class="table table-hover table-striped table-bordered">
+      <thead>
+        <th>型号</th>
+        <th class="ims_hide">平台</th>
+        <th class="ims_hide_no">功率</th>
+        <th class="ims_hide">转速</th>
+        <th class="ims_hide">单体泵</th>
+        <!--
+        <th>详细信息</th>
+        -->
+      </thead>
+    </table>    
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#ims_list').DataTable({
+      "autoWidth": false,
+      "columns": [
+        {"width": "24%", "data": null,   "className": "tb-td-center", "render": function (data, type, row, meta) {
+            var val1 = '<a href="/ims/ims_detail/' + row.id + '/" title="' + row.val1 + '">'+row.val1+'</a>'
+            return val1;
+        }},
+        {"width": "22%", "data": null,   "className": "tb-td-center ims_hide", "render": function (data, type, row, meta) {
+            var val2 = '<a href="/ims/ims_detail/' + row.id + '/" title="' + row.val2 + '">'+row.val2+'</a>'
+            return val2;
+        }},
+        {"width": "18%", "data": null,   "className": "tb-td-center ims_hide_no", "render": function (data, type, row, meta) {
+            var val3 = '<a href="/ims/ims_detail/' + row.id + '/" title="' + row.val3 + '">'+row.val3+'</a>'
+            return val3;
+        }},
+        {"width": "18%", "data": null,   "className": "tb-td-center ims_hide", "render": function (data, type, row, meta) {
+            var val4 = '<a href="/ims/ims_detail/' + row.id + '/" title="' + row.val4 + '">'+row.val4+'</a>'
+            return val4;
+        }},
+        {"width": "18%", "data": null,   "className": "tb-td-center ims_hide", "render": function (data, type, row, meta) {
+            var val5 = '<a href="/ims/ims_detail/' + row.id + '/" title="' + row.val5 + '">'+row.val5+'</a>'
+            return val5;
+        }}/*,
+        {"width": "8%", "data": null,   "className": "tb-td-center ims_hide", "render": function (data, type, row, meta) {
+            var val6 = '<a href="#" title="' + row.all + '">在此查看：'+row.all+'</a>'
+            return val6;
+        }},*/
+      ],
+      "ordering": false,
+      "lengthChange": true,
+      "searching": true,
+      "stateSave": true,
+      "processing": true,
+      "serverSide": false,
+      "ajax": '/ims/ajax_get_list/',
+      "language": {
+        "emptyTable": "未加载",
+        "loadingRecords": "加载中",
+        "processing": "查询中",
+        "search": "查找：",
+        "lengthMenu": "每页 _MENU_ 条",
+        "zeroRecords": "没有数据",
+        "paginate": {
+            'first': '首页',
+            'last': '末页',
+            'next': '后一页',
+            'previous': '前一页'
+        },
+        "info": '第 _PAGE_ 页 / 共 _PAGES_ 页',
+        "infoEmpty": '第 0 页 / 共 0 页',
+        "infoFiltered": '(过滤总数 _MAX_ 条)'
+      }
+    }); //end of $('#ims_list').DataTable        
+  });
+
+</script>
+
+{% endblock %}

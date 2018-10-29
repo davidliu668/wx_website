@@ -11,7 +11,7 @@
                 {
                     "type": "view",
                     "name": "添加记录",
-                    "url": "http://v.qq.com/"
+                    "url": "https://www.gohome123.cn/expense/"
                 },
                 {
                     "type": "click",

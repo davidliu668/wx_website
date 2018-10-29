@@ -1,0 +1,28 @@
+{% extends "base_hcp.html" %}
+{% block content %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+
+<form id="ims_info" action="/hcp/ims_new/"  method="POST" >
+  <div class="form-group">
+    <label for="wx">微信号</label>
+    <input type="text" class="form-control" id="wx" value="17747406">
+  </div>
+  <div class="form-group">
+    <label for="img">微信二维码</label>
+    <img src="http://hcp-1251650800.file.myqcloud.com/about/hjy.jpg" class="img-rounded img-responsive" alt="微信二维码">
+  </div>
+  <input type="text" class="hidden" name="id" id="id" value="{{id}}">
+
+  <button type="buuton" class="hidden">aa</button>
+  <button id="btn_return" type="button" class="btn btn-default" style="margin-left: 10px;align:right;" onclick="javascript:history.back()">返回</button>
+</form>
+<script language="javascript">
+$(function () {
+    $('#wx').select()
+});
+</script>
+  </div>
+</div>
+{% endblock %}
