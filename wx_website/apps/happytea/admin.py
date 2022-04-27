@@ -3,6 +3,7 @@ from django.contrib import admin
 from models import TeaCharge
 from models import User
 from models import Team
+from models import Center
 
 # Register your models here.
 
@@ -28,8 +29,17 @@ admin.site.register(User, UserAdmin)
 
 
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    list_display = ('id', 'center_id', 'name')
+    list_filter = ('center_id',)
     ordering = ('id',)
 
 
 admin.site.register(Team, TeamAdmin)
+
+
+class CenterAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    ordering = ('id',)
+
+
+admin.site.register(Center, CenterAdmin)

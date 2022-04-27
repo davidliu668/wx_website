@@ -155,6 +155,11 @@ def hanlder_txt_msg():
     user = User.get_user_by_openid(wechat.message.source)
     (user_check_ret, user_check_info) = check_user(user)
 
+    # 导出组织结构信息
+    # add 20220427 zhuofu
+    if txt == '0427':
+        content = gen_org_help()
+        return wechat.response_text(content=content)
     # 如何注册
     if txt == '1':
         content = gen_reg_help()
@@ -313,7 +318,7 @@ def hanlder_txt_msg():
         # 已注册并审核通过
         if user_check_ret:
             team_name = Team.get_name_by_id(user.team_id).encode('utf8')
-            content = '您已注册\nRTX：{}小组：{}\n\n修改信息请联系管理员(zhuofu)'.format(
+            content = '您已注册\n企业微信：{}小组：{}\n\n修改信息请联系管理员(zhuofu)'.format(
                 user.rtx, team_name)
             return wechat.response_text(content=content)
         # 未注册 or 未审核
@@ -489,7 +494,7 @@ def export_to_csv(unexp_info):
     csvfile.write(codecs.BOM_UTF8)
     writer = csv.writer(csvfile)
 
-    writer.writerow(['RTX', '小组', '金额', '时间', '备注'])
+    writer.writerow(['企业微信', '小组', '金额', '时间', '备注'])
     csv_data = []
     for tc in unexp_info['tc_list']:
         csv_data.append((tc['user_name'].encode('utf8'), tc['team_name'], str(tc['money']),
@@ -530,7 +535,7 @@ def gen_summery(unexp_info):
 
 
 def gen_reg_info(reg_req):
-    reg_info = 'RTX：{}\n小组：{}'.format(reg_req[0], reg_req[2])
+    reg_info = '企业微信：{}\n小组：{}'.format(reg_req[0], reg_req[2])
     return reg_info
 
 
@@ -707,6 +712,8 @@ def gen_expense_info(user, expense=False):
     num = len(teacharge_list)
     str_expense = '已报销' if expense else '未报销'
 
+    # 最大展示记录条数
+    max_num = 20
     if num == 0:
         expense_info = '{} 目前没有{}记录'.format(team_name, str_expense)
     else:
@@ -718,6 +725,11 @@ def gen_expense_info(user, expense=False):
             time_str = teacharge.charge_time.strftime('%Y-%m-%d')
             t_user = User.get_user_by_id(teacharge.user_id)
             rtx = '该用户已注销' if t_user is None else t_user.rtx
+
+            # 超过限制的条数不展示
+            if index > max_num:
+                index += 1
+                continue
             detail_list += '''
 第 {} 笔
 金额：{}
@@ -726,8 +738,9 @@ def gen_expense_info(user, expense=False):
 备注：{}\n'''.format(index, teacharge.money, time_str, rtx, teacharge.remark.encode('utf8'))
             index += 1
 
-        expense_info = '{} 有 {} 笔{}费用，总计 {} 元\n\n详细列表:\n{}'.format(
-            team_name, num, str_expense, total, detail_list)
+        max_tips = '' if index <= max_num else '（最多展示 {} 条记录）'.format(max_num)
+        expense_info = '{} 有 {} 笔{}费用，总计 {} 元\n\n详细列表{}:\n{}'.format(
+            team_name, num, str_expense, total, max_tips, detail_list)
 
     return expense_info
 
@@ -747,7 +760,7 @@ def gen_user_info():
         team_name = Team.get_name_by_id(team_id).encode('utf8')
         status_str = '已注册' if status == 1 else '待审核'
 
-        userinfo = '''RTX: {}
+        userinfo = '''企业微信: {}
 小组: {}
 状态: {}'''.format(user.rtx, team_name, status_str)
 
@@ -772,6 +785,21 @@ def gen_user_info():
 def gen_check_info():
     check_info = '''审核通过才能进行其他操作\n可提醒管理员(zhuofu)尽快审核'''
     return check_info
+
+
+def gen_org_help():
+    org_info = ''
+    centers = Center.objects.all()
+    for center in centers:
+        org_info += '{}\n'.format(center.name.encode('utf8'))
+        teams = Team.objects.filter(center_id=center.id)
+        for team in teams:
+            org_info += '\t\t{}({})\n'.format(team.name.encode('utf8'), team.id)
+            users = User.objects.filter(team_id=team.id)
+            for user in users:
+                if user.status == 1:
+                    org_info += '\t\t\t\t{}\n'.format(user.rtx)
+    return org_info
 
 
 def get_unexp_teacharge_info(user=None):
@@ -836,9 +864,13 @@ def get_unexp_teacharge_info(user=None):
 
 
 def get_rel_teams(user=None):
-    # 目前只有运维服务中心在用，直接返回1-5
-    # 后续有其他组后再按照组织关系获取
-    return [1, 2, 3, 4, 5]
+    # 返回所有team的id列表
+    team_id_list = []
+    qs = Team.objects.all()
+    for team in qs:
+        team_id_list.append(team.id)
+
+    return team_id_list
 
 
 def gen_user_help(user):
@@ -868,9 +900,9 @@ def gen_add_help():
     add_hlep = '''提交报销说明：
 1、发送提交请求
 发送：'添加'+空格+金额+空格+[时间]+空格+[备注]
-例如：'添加 98.2'
-或者：'添加 98.2 20170219'
-或者：'添加 98.2 20170219 参加人数较多，加量 卤味+水果'
+例如：添加 98.2
+或者：添加 98.2 20170219
+或者：添加 98.2 20170219 参加人数较多，加量 卤味+水果
 
 ’时间‘为可选，格式必须为’YYYYMMDD‘；不填，则自动设置为当天
 ’备注‘为可选，如果填写’备注‘，必须填写’时间‘
@@ -889,9 +921,10 @@ def gen_add_help():
 def gen_reg_help():
     reg_hlep = '''注册说明：
 1、发送注册请求
-发送：'注册'+空格+rtx+空格+小组名
-例如：'注册 zhuofuliu 质量组'
-小组名：'存储运维组'，'接入运维组'，'视频运维组'，'运营开发组'，‘质量组’
+发送：'注册'+空格+企业微信+空格+小组名
+例如：注册 zhuofuliu 接入测试组
+小组名：'接入运维组'，'接入测试组'，'加速运维组'...
+若注册失败请联系管理员（zhuofu）
 
 2、等待管理员(zhuofu)审核
 申请注册后，系统会通知管理员
@@ -904,7 +937,7 @@ def gen_reg_help():
 def gen_fankui_help():
     fankui_help = '''反馈说明：
 发送：'反馈'+空格+反馈内容
-例如：'反馈 请问可以支持语音输入吗？'
+例如：反馈 请问可以支持语音输入吗？
 '''
     return fankui_help
 

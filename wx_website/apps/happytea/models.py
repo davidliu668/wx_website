@@ -53,7 +53,16 @@ class User(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=32)
+    center_id = models.PositiveIntegerField(default=0)
 
     @classmethod
     def get_name_by_id(cls, team_id):
         return Team.objects.filter(pk=team_id)[0].name
+
+
+class Center(models.Model):
+    name = models.CharField(max_length=32)
+
+    @classmethod
+    def get_name_by_id(cls, center_id):
+        return Center.objects.filter(pk=center_id)[0].name
